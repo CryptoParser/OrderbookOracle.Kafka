@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Producer", "Producer\Producer.csproj", "{EF8C0676-943A-4B37-B548-C59B70E99062}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consumer", "Consumer\Consumer.csproj", "{53546176-6B70-48FA-B553-61F97C812BA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessagingKafka", "MessagingKafka\MessagingKafka.csproj", "{98DDFA7D-E0BF-4809-8E35-296A138AE841}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{295E63F8-D278-4475-B87D-5766528524A4}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EF8C0676-943A-4B37-B548-C59B70E99062}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF8C0676-943A-4B37-B548-C59B70E99062}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF8C0676-943A-4B37-B548-C59B70E99062}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF8C0676-943A-4B37-B548-C59B70E99062}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53546176-6B70-48FA-B553-61F97C812BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53546176-6B70-48FA-B553-61F97C812BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53546176-6B70-48FA-B553-61F97C812BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53546176-6B70-48FA-B553-61F97C812BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98DDFA7D-E0BF-4809-8E35-296A138AE841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98DDFA7D-E0BF-4809-8E35-296A138AE841}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98DDFA7D-E0BF-4809-8E35-296A138AE841}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98DDFA7D-E0BF-4809-8E35-296A138AE841}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
