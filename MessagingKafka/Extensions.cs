@@ -12,7 +12,7 @@ public static class Extensions
         serviceCollection.AddSingleton<IKafkaProducer<TMessage>, KafkaProducer<TMessage>>();
     }
 
-    public static IServiceCollection AddKafka<TMessage, THandler>(this IServiceCollection serviceCollection,
+    public static IServiceCollection AddConsumer<TMessage, THandler>(this IServiceCollection serviceCollection,
         IConfigurationSection configurationSection) where THandler : class, IMessageHandler<TMessage>
     {
         serviceCollection.Configure<KafkaSettings>(configurationSection);
