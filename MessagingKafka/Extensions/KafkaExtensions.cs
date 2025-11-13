@@ -1,15 +1,20 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using MessagingKafka.Consumer;
+using MessagingKafka.Consumer.Interfaces;
+using MessagingKafka.Producer;
+using MessagingKafka.Producer.Interfaces;
+using MessagingKafka.Settings;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace MessagingKafka;
+namespace MessagingKafka.Extensions;
 
-public static class Extensions
+public static class KafkaExtensions
 {
     public static void AddProducer<TMessage>(this IServiceCollection serviceCollection,
         IConfigurationSection configurationSection) 
     {
         serviceCollection.Configure<KafkaSettings>(configurationSection);
-        serviceCollection.AddSingleton<IKafkaProducer<TMessage>, KafkaProducer<TMessage>>();
+        serviceCollection.AddTransient<IKafkaProducer<TMessage>, KafkaProducer<TMessage>>();
     }
 
     public static IServiceCollection AddConsumer<TMessage, THandler>(this IServiceCollection serviceCollection,
@@ -17,7 +22,7 @@ public static class Extensions
     {
         serviceCollection.Configure<KafkaSettings>(configurationSection);
         serviceCollection.AddHostedService<KafkaConsumer<TMessage>>();
-        serviceCollection.AddSingleton<IMessageHandler<TMessage>, THandler>();
+        serviceCollection.AddTransient<IMessageHandler<TMessage>, THandler>();
 
         return serviceCollection;
     }

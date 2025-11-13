@@ -1,16 +1,21 @@
 ﻿using Confluent.Kafka;
+using MessagingKafka.Consumer.Deserializer;
+using MessagingKafka.Consumer.Interfaces;
+using MessagingKafka.Settings;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace MessagingKafka;
+namespace MessagingKafka.Consumer;
 
 public class KafkaConsumer<TMessage> : BackgroundService
 {
     private readonly IConsumer<string, TMessage> _consumer;
     private readonly string _topic;
     private readonly IMessageHandler<TMessage> _messageHandler;
+    private readonly ILogger<KafkaConsumer<TMessage>> _logger;
 
-    public KafkaConsumer(IOptions<KafkaSettings> kafkaSettings, IMessageHandler<TMessage> messageHandler)
+    public KafkaConsumer(IOptions<KafkaSettings> kafkaSettings, IMessageHandler<TMessage> messageHandler,  ILogger<KafkaConsumer<TMessage>> logger)
     {
         var config = new ConsumerConfig
         {
@@ -20,18 +25,21 @@ public class KafkaConsumer<TMessage> : BackgroundService
 
         _topic = kafkaSettings.Value.Topic;
         _messageHandler = messageHandler;
+        _logger = logger;
         
         _consumer = new ConsumerBuilder<string, TMessage>(config)
             .SetValueDeserializer(new KafkaValueDeserializer<TMessage>())
             .Build();
     }
-    protected override Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        return Task.Run(() => ConsumeAsync(stoppingToken), stoppingToken);
+        await ConsumeAsync(stoppingToken);
     }
 
-    private async Task? ConsumeAsync(CancellationToken stoppingToken)
+    private async Task ConsumeAsync(CancellationToken stoppingToken)
     {
+        await Task.Yield();
+        
         _consumer.Subscribe(_topic);
 
         try
@@ -45,21 +53,26 @@ public class KafkaConsumer<TMessage> : BackgroundService
         catch (ConsumeException ex) when (ex.Error.IsFatal)
         {
             Console.WriteLine($"Фатальная ошибка Kafka: {ex.Error.Reason}");
-            throw;
         }
         catch (ConsumeException ex)
         {
             Console.WriteLine($"Ошибка Kafka: {ex.Error.Reason}");
         }
+        catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
+        {
+            _logger.LogInformation("Consumer остановлен по cancellation token");
+        }
+        catch (OperationCanceledException ex)
+        {
+            _logger.LogWarning(ex, "Operation cancelled (timeout?)");
+        }
         catch (Exception ex)
         {
-            Console.WriteLine($"Ошибка обработки сообщения: {ex.Message}");
+            Console.WriteLine($"Неожиданная ошибка: {ex.Message}");
         }
-    }
-
-    public override Task StopAsync(CancellationToken cancellationToken)
-    {
-        _consumer.Close();
-        return base.StopAsync(cancellationToken);
+        finally
+        {
+            _consumer.Close();
+        }
     }
 }
